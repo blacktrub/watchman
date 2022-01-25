@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-    "watchman/pkg/db"
+	"watchman/pkg/db"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,14 +26,14 @@ func getRouter() *gin.Engine {
 func main() {
 	host, port := getHostPort()
 	router := getRouter()
-    db, err := db.GetDB()
-    if err != nil {
-        panic(err)
-    }
-    err = db.PrepareDB()
-    if err != nil {
-        panic(err)
-    }
+	db, err := db.GetDB()
+	if err != nil {
+		panic(err)
+	}
+	err = db.PrepareDB()
+	if err != nil {
+		panic(err)
+	}
 
 	router.Run(fmt.Sprintf("%s:%d", host, port))
 }

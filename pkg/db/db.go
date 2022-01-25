@@ -32,11 +32,11 @@ func GetDB() (Database, error) {
 }
 
 func (db *Database) exec(query string, args ...interface{}) (sql.Result, error) {
-    return db.d.Exec(query, args...)
+	return db.d.Exec(query, args...)
 }
 
 func (db *Database) oneRow(query string, args ...interface{}) *sql.Row {
-    return db.d.QueryRow(query, args...)
+	return db.d.QueryRow(query, args...)
 }
 
 func (db *Database) PrepareDB() error {
@@ -65,3 +65,11 @@ func (db *Database) PrepareDB() error {
 	return nil
 }
 
+func (db *Database) GetUser(id int) (User, error) {
+	var user User
+	row := db.oneRow("select id, telegram_id from user where id = ?", id)
+	if err := row.Scan(&user.id, &user.telegram_id); err != nil {
+		return user, err
+	}
+	return user, nil
+}

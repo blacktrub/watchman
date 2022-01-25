@@ -26,3 +26,21 @@ func TestPrepareDBMustCreateTables(t *testing.T) {
 	}
 	os.Remove(databasePath)
 }
+
+func TestGetUser(t *testing.T) {
+	db, _ := GetDB()
+	db.PrepareDB()
+
+	user := User{1, 1}
+	db.exec("insert into user (id, telegram_id) values (?, ?)", user.id, user.telegram_id)
+
+	test_user, err := db.GetUser(1)
+	if err != nil {
+		t.Error("GetUser returned error", err)
+	}
+
+	if test_user.id != user.id {
+		t.Error("test_user id is not equal", test_user.id, user.id)
+	}
+	os.Remove(databasePath)
+}
