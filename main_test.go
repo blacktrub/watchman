@@ -9,7 +9,6 @@ import (
 func handleRequest(w *httptest.ResponseRecorder, r *http.Request) {
 	router := getRouter()
 	router.ServeHTTP(w, r)
-
 }
 
 func TestNotFound(t *testing.T) {
