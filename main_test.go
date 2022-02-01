@@ -41,4 +41,3 @@ func TestProjectNotFound(t *testing.T) {
 		t.Error("User does not exist, must be 404")
 	}
 }
-

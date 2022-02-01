@@ -58,6 +58,7 @@ func (db *Database) PrepareDB() error {
 		return err
 	}
 
+    // TODO: hash field must have index
 	_, err = db.exec(`
 	CREATE TABLE IF NOT EXISTS
 	project(
@@ -80,5 +81,14 @@ func (db *Database) GetUser(id int) (User, error) {
 		return user, err
 	}
 	return user, nil
+}
+
+func (db *Database) GetProjectByHash(hash string) (Project, error) {
+    var project Project
+    row := db.oneRow("select id, hash, user_id from project where hash = ?", hash)
+    if err := row.Scan(&project.id, &project.hash, &project.user_id); err != nil {
+        return project, err
+    }
+    return project, nil
 }
 
