@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestPrepareDBMustCreateTables(t *testing.T) {
@@ -52,7 +53,7 @@ func TestGetProject(t *testing.T) {
 	user := User{1, 1}
 	db.exec("insert into user (id, telegram_id) values (?, ?)", user.ID, user.TelegramID)
 
-	project := Project{1, "asd", user.ID}
+	project := Project{1, "asd", user.ID, time.Now()}
 	db.exec(
 		"insert into project (id, hash, user_id) values (?, ?, ?)",
 		project.ID, project.Hash, project.UserID)

@@ -60,3 +60,4 @@ func TestUserTriedToUseNotHisProject(t *testing.T) {
 		t.Error("User 2 does not have that project, must be 404")
 	}
 }
+

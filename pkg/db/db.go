@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -14,9 +15,10 @@ type User struct {
 }
 
 type Project struct {
-	ID     int
-	Hash   string
-	UserID int
+	ID      int
+	Hash    string
+	UserID  int
+	Updated time.Time
 }
 
 type Database struct {
@@ -65,7 +67,8 @@ func (db *Database) PrepareDB() error {
 	    id INTEGER PRIMARY KEY AUTOINCREMENT,
 	    hash VARCHAR(32) NOT NULL,
 	    user_id INTEGER NOT NULL,
-	        FOREIGN KEY(user_id) REFERENCES user(id)
+	    updated INTEGER NULL,
+        FOREIGN KEY(user_id) REFERENCES user(id)
 	)`)
 	if err != nil {
 		return err
@@ -85,9 +88,15 @@ func (db *Database) GetUser(id int) (User, error) {
 
 func (db *Database) GetProjectByHash(hash string) (Project, error) {
 	var project Project
-	row := db.oneRow("select id, hash, user_id from project where hash = ?", hash)
-	if err := row.Scan(&project.ID, &project.Hash, &project.UserID); err != nil {
+	row := db.oneRow("select id, hash, user_id, updated from project where hash = ?", hash)
+	var updated sql.NullInt64
+	if err := row.Scan(&project.ID, &project.Hash, &project.UserID, &updated); err != nil {
 		return project, err
+	}
+
+	_, err := updated.Value()
+	if err == nil {
+		project.Updated = time.Unix(updated.Int64, 0)
 	}
 	return project, nil
 }
