@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -39,5 +40,23 @@ func TestProjectNotFound(t *testing.T) {
 	handleRequest(recorder, request)
 	if recorder.Code != 404 {
 		t.Error("User does not exist, must be 404")
+	}
+}
+
+func TestUserTriedToUseNotHisProject(t *testing.T) {
+	user1 := 1
+	user2 := 2
+	database, _ := db.GetDB()
+	database.Exec(fmt.Sprintf("insert into user (id, telegram_id) values (%d, 1)", user1))
+	database.Exec(fmt.Sprintf("insert into user (id, telegram_id) values (%d, 1)", user2))
+
+	projectHash := "foo"
+	database.Exec(fmt.Sprintf("insert into project (id, hash, user_id) values (2, '%s', %d)", projectHash, user1))
+
+	request, _ := http.NewRequest("GET", fmt.Sprintf("/%d/%s", user2, projectHash), nil)
+	recorder := httptest.NewRecorder()
+	handleRequest(recorder, request)
+	if recorder.Code != 404 {
+		t.Error("User 2 does not have that project, must be 404")
 	}
 }

@@ -24,7 +24,18 @@ func sayAliveView(c *gin.Context, db db.Database) {
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{})
 	}
-	c.JSON(http.StatusNotFound, gin.H{})
+
+	projectHash := c.Param("project_hash")
+	project, err := db.GetProjectByHash(projectHash)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+	}
+
+	if project.UserID != userId {
+		c.JSON(http.StatusNotFound, gin.H{})
+	}
+
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 // TODO: how to do it without this?
@@ -47,7 +58,7 @@ func getRouter() (*gin.Engine, db.Database) {
 	}
 
 	router := gin.Default()
-	router.GET("/:user_id/:key", buildHandler(sayAliveView, db))
+	router.GET("/:user_id/:project_hash", buildHandler(sayAliveView, db))
 	return router, db
 }
 

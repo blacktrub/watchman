@@ -32,15 +32,15 @@ func TestGetUser(t *testing.T) {
 	db.PrepareDB()
 
 	user := User{1, 1}
-	db.exec("insert into user (id, telegram_id) values (?, ?)", user.id, user.telegram_id)
+	db.exec("insert into user (id, telegram_id) values (?, ?)", user.ID, user.TelegramID)
 
 	testUser, err := db.GetUser(1)
 	if err != nil {
 		t.Error("GetUser returned error", err)
 	}
 
-	if testUser.id != user.id {
-		t.Error("test_user id is not equal", testUser.id, user.id)
+	if testUser.ID != user.ID {
+		t.Error("test_user id is not equal", testUser.ID, user.ID)
 	}
 	os.Remove(databasePath)
 }
@@ -50,21 +50,20 @@ func TestGetProject(t *testing.T) {
 	db.PrepareDB()
 
 	user := User{1, 1}
-	db.exec("insert into user (id, telegram_id) values (?, ?)", user.id, user.telegram_id)
+	db.exec("insert into user (id, telegram_id) values (?, ?)", user.ID, user.TelegramID)
 
-	project := Project{1, "asd", user.id}
+	project := Project{1, "asd", user.ID}
 	db.exec(
 		"insert into project (id, hash, user_id) values (?, ?, ?)",
-		project.id, project.hash, project.user_id)
+		project.ID, project.Hash, project.UserID)
 
-	dbProject, err := db.GetProjectByHash(project.hash)
+	dbProject, err := db.GetProjectByHash(project.Hash)
 	if err != nil {
 		t.Error("GetProjectByHash returned error", err)
 	}
 
-	if dbProject.id != project.id {
-		t.Error("dbProject id is not equal", dbProject.id, project.id)
+	if dbProject.ID != project.ID {
+		t.Error("dbProject id is not equal", dbProject.ID, project.ID)
 	}
 	os.Remove(databasePath)
 }
-

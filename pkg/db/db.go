@@ -9,14 +9,14 @@ import (
 var databasePath = "./storage.db"
 
 type User struct {
-	id          int
-	telegram_id int
+	ID         int
+	TelegramID int
 }
 
 type Project struct {
-	id      int
-	hash    string
-	user_id int
+	ID     int
+	Hash   string
+	UserID int
 }
 
 type Database struct {
@@ -58,7 +58,7 @@ func (db *Database) PrepareDB() error {
 		return err
 	}
 
-    // TODO: hash field must have index
+	// TODO: hash field must have index
 	_, err = db.exec(`
 	CREATE TABLE IF NOT EXISTS
 	project(
@@ -77,18 +77,17 @@ func (db *Database) PrepareDB() error {
 func (db *Database) GetUser(id int) (User, error) {
 	var user User
 	row := db.oneRow("select id, telegram_id from user where id = ?", id)
-	if err := row.Scan(&user.id, &user.telegram_id); err != nil {
+	if err := row.Scan(&user.ID, &user.TelegramID); err != nil {
 		return user, err
 	}
 	return user, nil
 }
 
 func (db *Database) GetProjectByHash(hash string) (Project, error) {
-    var project Project
-    row := db.oneRow("select id, hash, user_id from project where hash = ?", hash)
-    if err := row.Scan(&project.id, &project.hash, &project.user_id); err != nil {
-        return project, err
-    }
-    return project, nil
+	var project Project
+	row := db.oneRow("select id, hash, user_id from project where hash = ?", hash)
+	if err := row.Scan(&project.ID, &project.Hash, &project.UserID); err != nil {
+		return project, err
+	}
+	return project, nil
 }
-
