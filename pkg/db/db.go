@@ -31,6 +31,14 @@ func GetDB() (Database, error) {
 	return Database{db}, nil
 }
 
+func (db *Database) Close() error {
+	return db.d.Close()
+}
+
+func (db *Database) Exec(query string, args ...interface{}) (sql.Result, error) {
+	return db.exec(query, args...)
+}
+
 func (db *Database) exec(query string, args ...interface{}) (sql.Result, error) {
 	return db.d.Exec(query, args...)
 }
@@ -73,3 +81,4 @@ func (db *Database) GetUser(id int) (User, error) {
 	}
 	return user, nil
 }
+
